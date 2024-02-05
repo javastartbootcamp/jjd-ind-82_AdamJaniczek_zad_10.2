@@ -76,7 +76,7 @@ class MixPhoneContract implements PhoneContract {
     @Override
     public void useMinutes(double cost) {
         if (availableMinutes > 0) {
-            availableMinutes -= cost;
+            availableMinutes -= cost / costPerMinute;
         } else {
             balance -= cost;
         }

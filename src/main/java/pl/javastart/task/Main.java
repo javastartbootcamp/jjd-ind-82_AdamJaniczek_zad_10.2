@@ -18,12 +18,13 @@ public class Main {
         //phone2.sendMms();
         //phone2.printAccountState();
         System.out.println("_".repeat(30));
-        Phone phone3 = new Phone(new MixPhoneContract(50, 100, 50, 120, 0.02, 0.5, 0.3));
+        Phone phone3 = new Phone(new MixPhoneContract(50, 100, 50, 60, 0.02, 0.5, 0.3));
         phone3.printAccountState();
         phone3.sendMms();
         phone3.printAccountState();
         phone3.sendSms();
-        phone3.call(600);
+        phone3.call(3600);
+        phone3.call(3600);
         phone3.printAccountState();
     }
 }
