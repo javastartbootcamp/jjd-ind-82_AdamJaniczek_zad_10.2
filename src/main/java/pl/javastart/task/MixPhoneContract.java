@@ -1,13 +1,20 @@
 package pl.javastart.task;
 
-class CardPhoneContract implements PhoneContract {
+class MixPhoneContract implements PhoneContract {
     private double balance;
+    private int availableSms;
+    private int availableMms;
+    private int availableMinutes;
     private double costPerSms;
     private double costPerMms;
     private double costPerMinute;
 
-    public CardPhoneContract(double balance, double costPerSms, double costPerMms, double costPerMinute) {
+    public MixPhoneContract(double balance, int availableSms, int availableMms, int availableMinutes,
+                            double costPerSms, double costPerMms, double costPerMinute) {
         this.balance = balance;
+        this.availableSms = availableSms;
+        this.availableMms = availableMms;
+        this.availableMinutes = availableMinutes;
         this.costPerSms = costPerSms;
         this.costPerMms = costPerMms;
         this.costPerMinute = costPerMinute;
@@ -35,37 +42,48 @@ class CardPhoneContract implements PhoneContract {
 
     @Override
     public int getAvailableSms() {
-        return 0;
+        return availableSms;
     }
 
     @Override
     public int getAvailableMms() {
-        return 0;
+        return availableMms;
     }
 
     @Override
     public int getAvailableMinutes() {
-        return 0;
+        return availableMinutes;
     }
 
     @Override
     public void useSms() {
-        balance -= costPerSms;
+        if (availableSms > 0) {
+            availableSms--;
+        } else {
+            balance -= costPerSms;
+        }
     }
 
     @Override
     public void useMms() {
-        balance -= costPerMms;
+        if (availableMms > 0) {
+            availableMms--;
+        } else {
+            balance -= costPerMms;
+        }
     }
 
     @Override
     public void useMinutes(double cost) {
-        balance -= cost;
+        if (availableMinutes > 0) {
+            availableMinutes -= cost;
+        } else {
+            balance -= cost;
+        }
     }
 
     @Override
     public String getContractType() {
-        return "Na kartę";
+        return "Mix";
     }
-
 }

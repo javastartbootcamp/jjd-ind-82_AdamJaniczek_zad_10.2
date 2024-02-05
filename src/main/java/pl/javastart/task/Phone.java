@@ -11,9 +11,9 @@ public class Phone {
     }
 
     public void sendSms() {
-        if (contract.getRemainingBalance() >= contract.getCostPerSms()) {
+        if (contract.getAvailableSms() > 0 || contract.getRemainingBalance() >= contract.getCostPerSms()) {
             sentSms++;
-            contract.deductBalance(contract.getCostPerSms());
+            contract.useSms();
             System.out.println("SMS wysłany");
         } else {
             System.out.println("Nie udało się wysłać SMSa");
@@ -21,9 +21,9 @@ public class Phone {
     }
 
     public void sendMms() {
-        if (contract.getRemainingBalance() >= contract.getCostPerMms()) {
+        if (contract.getAvailableMms() > 0 || contract.getRemainingBalance() >= contract.getCostPerMms()) {
             sentMms++;
-            contract.deductBalance(contract.getCostPerMms());
+            contract.useMms();
             System.out.println("MMS wysłany");
         } else {
             System.out.println("Nie udało się wysłać MMSa");
@@ -31,14 +31,17 @@ public class Phone {
     }
 
     public void call(int seconds) {
-        double cost = seconds * contract.getCostPerMinute() / 60;
-        if (contract.getRemainingBalance() >= cost) {
+        double costPerMinute = contract.getCostPerMinute();
+        double cost = seconds * costPerMinute / 60;
+        if (contract.getAvailableMinutes() > 0 || contract.getRemainingBalance() >= cost) {
             callDuration += seconds;
-            contract.deductBalance(cost);
+            contract.useMinutes(cost);
             System.out.println("Rozmowa trwała " + seconds + " sekund");
         } else {
-            System.out.println("Brak środków na koncie. Rozmowa przerwana.");
+            contract.useMinutes(contract.getRemainingBalance());
+            System.out.println("Brak środków na koncie lub brak dostępnych minut. Rozmowa przerwana.");
         }
+
     }
 
     public void printAccountState() {
@@ -46,6 +49,18 @@ public class Phone {
         System.out.println("Wysłanych SMSów: " + sentSms);
         System.out.println("Wysłanych MMSów: " + sentMms);
         System.out.println("Liczba sekund rozmowy: " + callDuration);
-        System.out.printf("Na koncie zostało %.2f zł\n", contract.getRemainingBalance());
+
+        String contractType = contract.getContractType();
+        if ("Na kartę".equals(contractType)) {
+            System.out.printf("Na koncie zostało %.2f zł\n", ((CardPhoneContract) contract).getRemainingBalance());
+        } else if ("Abonament".equals(contractType)) {
+            System.out.printf("Abonament NO LIMIT - brak limitów. Abonament %.2f zł\n", ((AbonnementPhoneContract) contract).getMonthlyFee());
+        } else if ("Mix".equals(contractType)) {
+            MixPhoneContract mixContract = (MixPhoneContract) contract;
+            System.out.println("Pozostałe SMSy: " + mixContract.getAvailableSms());
+            System.out.println("Pozostałe MMSy: " + mixContract.getAvailableMms());
+            System.out.println("Pozostałe minuty: " + mixContract.getAvailableMinutes());
+            System.out.println("Stan konta: " + mixContract.getRemainingBalance() + " zł\n");
+        }
     }
 }

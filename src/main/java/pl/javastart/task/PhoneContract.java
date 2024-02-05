@@ -1,13 +1,25 @@
 package pl.javastart.task;
 
-abstract class PhoneContract {
-    abstract double getRemainingBalance();
+interface PhoneContract {
+    double getRemainingBalance();
 
-    abstract double getCostPerSms();
+    double getCostPerSms();
 
-    abstract double getCostPerMms();
+    double getCostPerMms();
 
-    abstract double getCostPerMinute();
+    double getCostPerMinute();
 
-    abstract void deductBalance(double amount);
+    int getAvailableSms();
+
+    int getAvailableMms();
+
+    int getAvailableMinutes();
+
+    void useSms();
+
+    void useMms();
+
+    void useMinutes(double cost);
+
+    String getContractType();
 }
